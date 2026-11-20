@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HMS Pro — Hostel Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============================================================
+  LOGIN PAGE
+============================================================ -->
+<div class="login-page" id="loginPage">
+  <div class="login-wrap glass">
+    <!-- Hero Panel -->
+    <div class="login-hero">
+      <div class="hero-brand">
+        <div class="hero-icon"><i class="fas fa-hotel"></i></div>
+        <div>
+          <h1>HMS Pro</h1>
+          <span>Hostel Operations Platform</span>
+        </div>
+      </div>
+
+      <div class="hero-tagline">
+        <h2>Smart Hostel<br>Management<br>Made Simple</h2>
+        <p>A unified platform for students, wardens and mess managers to collaborate seamlessly and efficiently.</p>
+      </div>
+
+      <div class="hero-features">
+        <div class="hero-feature"><i><i class="fas fa-bed"></i></i>Real-time room allocation & booking</div>
+        <div class="hero-feature"><i><i class="fas fa-utensils"></i></i>Smart mess menu & attendance</div>
+        <div class="hero-feature"><i><i class="fas fa-wrench"></i></i>Maintenance complaint tracking</div>
+        <div class="hero-feature"><i><i class="fas fa-credit-card"></i></i>Digital fee payment system</div>
+        <div class="hero-feature"><i><i class="fas fa-envelope"></i></i>Automated email notifications</div>
+      </div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+      <div class="login-card-header">
+        <h2>Welcome back 👋</h2>
+        <p>Sign in to your portal to continue</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Account Type</label>
+          <div class="input-wrap">
+            <select id="loginRole" class="form-control" required>
+              <option value="student">🎓 Student Portal</option>
+              <option value="warden">🏠 Hostel Owner / Admin</option>
+              <option value="mess">🍽️ Mess Manager Portal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="identifierGroup">
+          <label class="form-label">Roll Number / Email</label>
+          <div class="input-wrap">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="loginIdentifier" class="form-control" placeholder="e.g. CS26101 or email@univ.edu">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="loginPass" class="form-control" placeholder="Enter your password" value="password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">
+          <i class="fas fa-sign-in-alt"></i> Login Securely
+        </button>
+      </form>
+
+      <div class="login-demo-section">
+        <p class="label">Quick Demo Access</p>
+        <div class="demo-grid">
+          <button class="demo-btn" data-role="student">
+            <i class="fas fa-user-graduate"></i> Student
+          </button>
+          <button class="demo-btn" data-role="warden">
+            <i class="fas fa-shield-alt"></i> Warden
+          </button>
+          <button class="demo-btn" data-role="mess">
+            <i class="fas fa-utensils"></i> Mess Mgr
+          </button>
+        </div>
+      </div>
+
+      <div class="login-join-link">
+        New student? <a href="javascript:void(0)" onclick="openJoinModal()">Apply for admission</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+  DASHBOARD APP SHELL
+============================================================ -->
+<div class="app-shell" id="appShell" style="display:none;">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fas fa-hotel"></i></div>
+      <div class="brand-text">
+        <h2>HMS Pro</h2>
+        <span>Hostel Operations</span>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="avatarLetter">U</div>
+      <div class="user-info">
+        <span class="name" id="profileName">User</span>
+        <span class="role" id="profileRole">Role</span>
+      </div>
+    </div>
+
+    <ul class="sidebar-nav" id="sidebarNav">
+      <!-- Injected via JS -->
+    </ul>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="btnLogout">
+        <i class="fas fa-sign-out-alt"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN WRAPPER ── -->
+  <div class="main-wrapper">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div>
+          <div class="topbar-title" id="topbarTitle">Dashboard</div>
+          <div class="topbar-subtitle" id="topbarSubtitle">HMS Pro</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="notif-trigger" id="notifTrigger">
+          <i class="fas fa-bell" style="font-size:0.95rem;"></i>
+          <span class="notif-dot" id="notifDot" style="display:none;"></span>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-header">
+              <span>Notifications</span>
+              <i class="fas fa-check-double"></i>
+            </div>
+            <div class="notif-body" id="notifBody"><!-- Injected --></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content-body" id="contentBody">
+
+      <!-- =============================================
+           STUDENT PANELS
+      ============================================== -->
+
+      <!-- Student Dashboard -->
+      <section class="panel-view" id="student-home">
+        <!-- Active Student View -->
+        <div id="studentActiveView">
+          <div class="stats-grid" id="studentStatsGrid">
+            <!-- Injected -->
+          </div>
+          <div class="dashboard-cols">
+            <div class="section-card glass" id="studentProfileCard"><!-- Injected --></div>
+            <div class="section-card glass" id="studentMenuCard"><!-- Injected --></div>
+          </div>
+        </div>
+        <!-- Pending Student View -->
+        <div id="studentPendingView" style="display:none;"><!-- Injected --></div>
+      </section>
+
+      <!-- Student Room Booking -->
+      <section class="panel-view" id="student-booking">
+        <div class="dashboard-cols">
+          <div class="section-card glass" id="currentBookingCard"><!-- Injected --></div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-info-circle"></i> Booking Policies</h3>
+            </div>
+            <ul class="info-list">
+              <li>Book any room with available beds — no prior booking required.</li>
+              <li>Release your current bed before switching to another room.</li>
+              <li>Warden is notified instantly on all room changes.</li>
+              <li>Rooms include bed, study table, wardrobe as standard.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="section-card glass mt-20">
+          <div class="section-header">
+            <h3><i class="fas fa-search"></i> Find Available Rooms</h3>
+            <div class="filters-bar">
+              <select class="filter-select" id="bookFilterBlock" onchange="renderStudentBooking()">
+                <option value="">All Blocks</option>
+                <option value="A">Block A</option>
+                <option value="B">Block B</option>
+                <option value="C">Block C</option>
+                <option value="D">Block D</option>
+              </select>
+              <select class="filter-select" id="bookFilterType" onchange="renderStudentBooking()">
+                <option value="">All Types</option>
+                <option value="Single">Single Deluxe</option>
+                <option value="2-Sharing">2-Sharing</option>
+                <option value="3-Sharing">3-Sharing</option>
+                <option value="4-Sharing">4-Sharing</option>
+              </select>
+              <select class="filter-select" id="bookFilterVacancy" onchange="renderStudentBooking()">
+                <option value="">All Status</option>
+                <option value="vacant">Available Only</option>
+              </select>
+            </div>
+          </div>
+          <div class="rooms-grid" id="bookingRoomsGrid"><!-- Injected --></div>
+        </div>
+      </section>
+
+      <!-- Student Leave -->
+      <section class="panel-view" id="student-leave">
+        <div class="dashboard-cols">
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-plane-departure"></i> Submit Leave Request</h3>
+            </div>
+            <form id="leaveForm">
+              <div class="form-group">
+                <label class="form-label">Reason for Leave</label>
+                <textarea id="leaveReason" class="form-control" placeholder="State your reason clearly (e.g. medical, family event, festival)" required></textarea>
+              </div>
+              <div class="grid-form">
+                <div class="form-group">
+                  <label class="form-label">Departure Date</label>
+                  <input type="date" id="leaveFromDate" class="form-control no-icon" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Return Date</label>
+                  <input type="date" id="leaveToDate" class="form-control no-icon" required>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Application</button>
+              </div>
+            </form>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-scroll"></i> Leave Guidelines</h3>
+            </div>
+            <ul class="info-list">
+              <li>Submit leave at least 24 hours before departure date.</li>
+              <li>Warden approval is mandatory before exiting campus.</li>
+              <li>Overstaying without extension request will attract penalties.</li>
+              <li>Parents may be contacted for outstation travel verification.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="section-card glass">
+          <div class="section-header">
+            <h3><i class="fas fa-history"></i> My Leave History</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>ID</th><th>Reason</th><th>Departure</th><th>Return</th><th>Status</th><th>Warden Remarks</th>
+              </tr></thead>
+              <tbody id="myLeavesBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student Complaints -->
+      <section class="panel-view" id="student-complaint">
+        <div class="dashboard-cols">
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-wrench"></i> Lodge Maintenance Ticket</h3>
+            </div>
+            <form id="complaintForm">
+              <div class="form-group">
+                <label class="form-label">Issue Category</label>
+                <select id="complaintCategory" class="form-control" required>
+                  <option value="Plumbing">🔧 Plumbing (Leakage, tap, flush)</option>
+                  <option value="Electrical">⚡ Electrical (Fan, light, geyser)</option>
+                  <option value="Internet">📡 WiFi / Internet Issues</option>
+                  <option value="Housekeeping">🧹 Housekeeping & Cleaning</option>
+                  <option value="Furniture">🪑 Furniture & Carpentry</option>
+                  <option value="Other">📋 Other Miscellaneous</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Problem Description</label>
+                <textarea id="complaintDesc" class="form-control" placeholder="Describe the issue in detail — room location, specific appliance, urgency level..." required></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-bug"></i> Register Ticket</button>
+              </div>
+            </form>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-clock"></i> Resolution SLA</h3>
+            </div>
+            <div>
+              <div class="sla-item">
+                <div class="sla-icon" style="background:rgba(248,113,113,0.1);color:var(--rose);"><i class="fas fa-bolt"></i></div>
+                <div><strong style="color:var(--text-primary)">Electrical & Plumbing</strong><br><span style="color:var(--text-secondary);font-size:0.8rem;">Resolved within 24 hours of ticket filing</span></div>
+              </div>
+              <div class="sla-item">
+                <div class="sla-icon" style="background:rgba(96,165,250,0.1);color:var(--blue);"><i class="fas fa-wifi"></i></div>
+                <div><strong style="color:var(--text-primary)">WiFi & Internet</strong><br><span style="color:var(--text-secondary);font-size:0.8rem;">Resolved within 12 hours of ticket filing</span></div>
+              </div>
+              <div class="sla-item">
+                <div class="sla-icon" style="background:rgba(52,211,153,0.1);color:var(--emerald);"><i class="fas fa-broom"></i></div>
+                <div><strong style="color:var(--text-primary)">Housekeeping</strong><br><span style="color:var(--text-secondary);font-size:0.8rem;">Addressed same day before 5 PM</span></div>
+              </div>
+              <div class="sla-item">
+                <div class="sla-icon" style="background:rgba(251,191,36,0.1);color:var(--amber);"><i class="fas fa-couch"></i></div>
+                <div><strong style="color:var(--text-primary)">Furniture & Others</strong><br><span style="color:var(--text-secondary);font-size:0.8rem;">Resolved within 48 hours of ticket filing</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-card glass">
+          <div class="section-header">
+            <h3><i class="fas fa-clipboard-list"></i> My Complaint Tickets</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Ticket ID</th><th>Category</th><th>Description</th><th>Date</th><th>Status</th><th>Assigned To</th><th>Your Review</th>
+              </tr></thead>
+              <tbody id="myComplaintsBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student Mess -->
+      <section class="panel-view" id="student-mess">
+        <div class="dashboard-cols">
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-clipboard-check"></i> Today's Meal Attendance</h3>
+            </div>
+            <p class="text-secondary text-sm mb-12">Toggle meals you will <strong style="color:var(--rose)">SKIP</strong> today to help the kitchen reduce wastage.</p>
+            <div class="meal-skip-grid" id="mealSkipGrid"><!-- Injected --></div>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-star"></i> Rate Today's Food</h3>
+            </div>
+            <form id="messFeedbackForm">
+              <div class="form-group">
+                <label class="form-label">Overall Rating</label>
+                <div class="star-rating" id="starRating">
+                  <i class="fas fa-star active" data-val="1"></i>
+                  <i class="fas fa-star active" data-val="2"></i>
+                  <i class="fas fa-star active" data-val="3"></i>
+                  <i class="fas fa-star active" data-val="4"></i>
+                  <i class="fas fa-star active" data-val="5"></i>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Comments & Suggestions</label>
+                <textarea id="messFeedbackComments" class="form-control" placeholder="Tell us what you liked or what could be improved..."></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Review</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="section-card glass">
+          <div class="section-header">
+            <h3><i class="fas fa-calendar-alt"></i> Weekly Mess Menu</h3>
+            <span class="badge badge-live"><i class="fas fa-circle" style="font-size:0.5rem;"></i> Live</span>
+          </div>
+          <div class="mess-week-grid" id="messWeekGrid"><!-- Injected --></div>
+        </div>
+      </section>
+
+      <!-- Student Fee -->
+      <section class="panel-view" id="student-fee">
+        <div style="max-width:680px; margin:0 auto;" id="studentFeeContainer"><!-- Injected --></div>
+      </section>
+
+
+      <!-- =============================================
+           WARDEN PANELS
+      ============================================== -->
+
+      <!-- Warden Dashboard -->
+      <section class="panel-view" id="warden-dashboard">
+        <div class="stats-grid" id="wardenStatsGrid"><!-- Injected --></div>
+        <div class="charts-grid">
+          <div class="section-card glass chart-card">
+            <h4>Hostel Bed Occupancy</h4>
+            <div class="chart-wrap"><canvas id="chartOccupancy"></canvas></div>
+          </div>
+          <div class="section-card glass chart-card">
+            <h4>Complaints by Category</h4>
+            <div class="chart-wrap"><canvas id="chartComplaints"></canvas></div>
+          </div>
+        </div>
+        <div class="section-card glass mt-20">
+          <div class="section-header">
+            <h3><i class="fas fa-history"></i> Recent Activity Log</h3>
+          </div>
+          <div class="activity-list" id="activityLog"><!-- Injected --></div>
+        </div>
+      </section>
+
+      <!-- Warden Students -->
+      <section class="panel-view" id="warden-students">
+        <div class="dashboard-cols">
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-user-plus"></i> Register New Student</h3>
+            </div>
+            <form id="addStudentForm">
+              <div class="grid-form">
+                <div class="form-group">
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" id="addStdName" class="form-control no-icon" placeholder="Student full name" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Roll Number *</label>
+                  <input type="text" id="addStdRoll" class="form-control no-icon" placeholder="e.g. CS26021" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Branch *</label>
+                  <input type="text" id="addStdBranch" class="form-control no-icon" placeholder="e.g. CSE / IT / ECE" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone *</label>
+                  <input type="text" id="addStdContact" class="form-control no-icon" placeholder="+91 98765 43210" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input type="email" id="addStdEmail" class="form-control no-icon" placeholder="student@univ.edu">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Blood Group</label>
+                  <input type="text" id="addStdBlood" class="form-control no-icon" placeholder="e.g. O+">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Parent / Guardian</label>
+                  <input type="text" id="addStdParent" class="form-control no-icon" placeholder="Parent name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Parent Phone</label>
+                  <input type="text" id="addStdParentContact" class="form-control no-icon" placeholder="Parent contact">
+                </div>
+              </div>
+              <div class="form-group" style="margin-top:4px;">
+                <label class="form-label">Assign Room</label>
+                <select id="addStdRoomSelect" class="form-control"><!-- Injected --></select>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Register Student</button>
+              </div>
+            </form>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-info-circle"></i> Registration Policy</h3>
+            </div>
+            <ul class="info-list">
+              <li>Newly registered students are assigned an automatic fee bill of <strong>₹48,000</strong> for the current semester.</li>
+              <li>Room allocation can be changed anytime using the Reallocate button in the directory.</li>
+              <li>Students without rooms can be assigned later from the rooms panel.</li>
+              <li>An email alert is sent to the owner whenever a new student is registered.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Pending Applications -->
+        <div class="section-card pending-alert-card" id="pendingStudentsSection" style="display:none; margin-top:20px;">
+          <div class="section-header">
+            <h3><i class="fas fa-user-clock" style="background:rgba(251,191,36,0.1); color:var(--amber); border-color:rgba(251,191,36,0.2);"></i> Pending Admission Applications</h3>
+            <span class="badge badge-warning">Review Required</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Temp ID</th><th>Name & Roll</th><th>Branch</th><th>Phone</th><th>Parent Details</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="pendingStudentsBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Active Students Directory -->
+        <div class="section-card glass" style="margin-top:20px;">
+          <div class="section-header">
+            <h3><i class="fas fa-users"></i> Student Directory</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>ID</th><th>Name & Roll</th><th>Branch</th><th>Room</th><th>Phone</th><th>Parent</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="studentsBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Warden Rooms -->
+      <section class="panel-view" id="warden-rooms">
+        <div class="dashboard-cols">
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-plus-circle"></i> Add Room to Inventory</h3>
+            </div>
+            <form id="addRoomForm">
+              <div class="grid-form">
+                <div class="form-group">
+                  <label class="form-label">Block Name *</label>
+                  <input type="text" id="addRoomBlock" class="form-control no-icon" placeholder="e.g. A, B, C" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Room Number *</label>
+                  <input type="text" id="addRoomNo" class="form-control no-icon" placeholder="e.g. 101, 202" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Bed Capacity *</label>
+                  <input type="number" id="addRoomCap" class="form-control no-icon" value="2" min="1" max="8" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Room Type</label>
+                  <select id="addRoomType" class="form-control">
+                    <option value="Single">Single Deluxe Suite</option>
+                    <option value="2-Sharing" selected>2-Sharing Standard</option>
+                    <option value="3-Sharing">3-Sharing Dormitory</option>
+                    <option value="4-Sharing">4-Sharing Dormitory</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-top:4px;">
+                <label class="form-label">Amenities</label>
+                <div style="display:flex; gap:20px; margin-top:8px; flex-wrap:wrap;">
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; font-size:0.84rem; color:var(--text-secondary);">
+                    <input type="checkbox" id="amenWifi" checked> WiFi
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; font-size:0.84rem; color:var(--text-secondary);">
+                    <input type="checkbox" id="amenAC"> Air Conditioner
+                  </label>
+                  <label style="display:flex; align-items:center; gap:7px; cursor:pointer; font-size:0.84rem; color:var(--text-secondary);">
+                    <input type="checkbox" id="amenBath" checked> Attached Bathroom
+                  </label>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Add Room</button>
+              </div>
+            </form>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-map"></i> Occupancy Legend</h3>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+              <div class="flex-gap-12">
+                <span class="badge badge-active">● Vacant</span>
+                <span class="text-secondary text-sm">Room has at least 1 available bed</span>
+              </div>
+              <div class="flex-gap-12">
+                <span class="badge badge-in-progress">● Partial</span>
+                <span class="text-secondary text-sm">Room is partially occupied</span>
+              </div>
+              <div class="flex-gap-12">
+                <span class="badge badge-rejected">● Full</span>
+                <span class="text-secondary text-sm">Room is at full capacity</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-card glass" style="margin-top:20px;">
+          <div class="section-header">
+            <h3><i class="fas fa-th"></i> Room Inventory Grid</h3>
+          </div>
+          <div class="rooms-grid" id="wardenRoomsGrid"><!-- Injected --></div>
+        </div>
+      </section>
+
+      <!-- Warden Leaves -->
+      <section class="panel-view" id="warden-leaves">
+        <div class="section-card glass">
+          <div class="section-header">
+            <h3><i class="fas fa-plane-departure"></i> Leave Applications Management</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>ID</th><th>Student</th><th>Reason</th><th>Departure</th><th>Return</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="wardenLeavesBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Warden Complaints -->
+      <section class="panel-view" id="warden-complaints">
+        <div class="section-card glass">
+          <div class="section-header">
+            <h3><i class="fas fa-wrench"></i> Maintenance Complaints Portal</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Ticket</th><th>Student</th><th>Category</th><th>Description</th><th>Filed</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="wardenComplaintsBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Warden Fees -->
+      <section class="panel-view" id="warden-fees">
+        <div class="section-card glass">
+          <div class="section-header">
+            <h3><i class="fas fa-receipt"></i> Fee Collection Registry</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Invoice ID</th><th>Student</th><th>Semester</th><th>Amount</th><th>Status</th><th>Paid Date</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="wardenFeesBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Warden Emails -->
+      <section class="panel-view" id="warden-emails">
+        <div class="dashboard-cols">
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-envelope-open-text"></i> Email Alert Settings</h3>
+            </div>
+            <form id="emailSettingsForm">
+              <div class="form-group">
+                <label class="form-label">Owner Email Address *</label>
+                <div class="input-wrap">
+                  <i class="fas fa-envelope input-icon"></i>
+                  <input type="email" id="ownerEmail" class="form-control" placeholder="owner@hostel.com" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label style="display:flex; align-items:center; gap:9px; cursor:pointer; font-size:0.875rem; color:var(--text-secondary);">
+                  <input type="checkbox" id="alertsEnabled" checked> Enable automated email notifications
+                </label>
+              </div>
+              <div class="form-group" style="border-top:1px dashed var(--border); padding-top:16px; margin-top:4px;">
+                <label class="form-label">Web3Forms API Key (Real Emails)</label>
+                <div class="input-wrap">
+                  <i class="fas fa-key input-icon"></i>
+                  <input type="text" id="web3Key" class="form-control" placeholder="Paste your Web3Forms access key...">
+                </div>
+                <p class="text-xs text-muted" style="margin-top:7px; line-height:1.6;">
+                  Get your free key at <a href="https://web3forms.com" target="_blank" style="color:var(--cyan)">web3forms.com</a>. Leave blank for simulated delivery.
+                </p>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+              </div>
+            </form>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-bell"></i> Notification Triggers</h3>
+            </div>
+            <ul class="info-list">
+              <li>Student books or releases a hostel room bed</li>
+              <li>Student submits a maintenance complaint ticket</li>
+              <li>Student applies for an out-of-campus leave</li>
+              <li>Student initiates a semester fee payment</li>
+              <li>New admission application is submitted</li>
+            </ul>
+          </div>
+        </div>
+        <div class="section-card glass" style="margin-top:20px;">
+          <div class="section-header">
+            <h3><i class="fas fa-mail-bulk"></i> Email Transmission Logs</h3>
+            <button class="btn btn-secondary btn-sm" onclick="triggerTestEmail()">
+              <i class="fas fa-paper-plane"></i> Send Test
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr>
+                <th>Log ID</th><th>Timestamp</th><th>Subject</th><th>Recipient</th><th>Message</th><th>Status</th>
+              </tr></thead>
+              <tbody id="emailLogsBody"><!-- Injected --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- =============================================
+           MESS MANAGER PANELS
+      ============================================== -->
+
+      <!-- Mess Dashboard -->
+      <section class="panel-view" id="mess-dashboard">
+        <div class="stats-grid" id="messStatsGrid"><!-- Injected --></div>
+        <div class="dashboard-cols">
+          <div class="section-card glass chart-card">
+            <h4>Food Rating Distribution</h4>
+            <div class="chart-wrap"><canvas id="chartMessRatings"></canvas></div>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-ban"></i> Today's Meal Skip Summary</h3>
+            </div>
+            <div id="messSkipSummary"><!-- Injected --></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mess Menu Editor -->
+      <section class="panel-view" id="mess-menu-edit">
+        <div class="dashboard-cols" style="grid-template-columns: 2fr 1fr;">
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-edit"></i> Edit Weekly Menu</h3>
+            </div>
+            <form id="menuEditForm">
+              <div class="form-group" style="max-width:220px;">
+                <label class="form-label">Day of Week</label>
+                <select id="menuDay" class="form-control">
+                  <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                  <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">🌅 Breakfast Menu</label>
+                <input type="text" id="menuBreakfast" class="form-control no-icon" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">☀️ Lunch Menu</label>
+                <input type="text" id="menuLunch" class="form-control no-icon" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">🌙 Dinner Menu</label>
+                <input type="text" id="menuDinner" class="form-control no-icon" required>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save & Notify Students</button>
+              </div>
+            </form>
+          </div>
+          <div class="section-card glass">
+            <div class="section-header">
+              <h3><i class="fas fa-info-circle"></i> Kitchen Notes</h3>
+            </div>
+            <ul class="info-list">
+              <li>Changes update the weekly calendar for all students in real-time.</li>
+              <li>Students receive an in-app notification when menu is updated.</li>
+              <li>Use comma-separated items for multiple dishes.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mess Ratings -->
+      <section class="panel-view" id="mess-ratings">
+        <div class="section-card glass" style="max-width:800px; margin:0 auto;">
+          <div class="section-header">
+            <h3><i class="fas fa-star"></i> Student Ratings & Reviews</h3>
+          </div>
+          <div id="ratingsListContainer"><!-- Injected --></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+
+<!-- =============================================
+     MODALS
+============================================== -->
+
+<!-- Complaint Feedback Modal -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Submit Resolution Feedback</h3>
+      <button class="modal-close" onclick="closeFeedbackModal()">×</button>
+    </div>
+    <form id="feedbackModalForm">
+      <div class="modal-body">
+        <input type="hidden" id="feedbackComplaintId">
+        <div class="form-group">
+          <label class="form-label">Your Review</label>
+          <textarea id="feedbackRemarks" class="form-control" placeholder="Describe the resolution quality (e.g. resolved quickly, technician was professional...)" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Review</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Fee Payment Modal -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-lock" style="color:var(--emerald);"></i> Secure Payment Gateway</h3>
+      <button class="modal-close" onclick="closePaymentModal()">×</button>
+    </div>
+    <form id="paymentModalForm">
+      <div class="modal-body">
+        <input type="hidden" id="paymentFeeId">
+        <div class="payment-amount-box">
+          <div class="label">Total Payable Amount</div>
+          <div class="amount">₹<span id="paymentAmountDisplay">0</span>.00</div>
+          <div class="sub">Semester Hostel Fee</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Card Holder Name</label>
+          <div class="input-wrap">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="payCardName" class="form-control" placeholder="Full name as on card" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Card Number</label>
+          <div class="input-wrap">
+            <i class="fas fa-credit-card input-icon"></i>
+            <input type="text" id="payCardNo" class="form-control card-num-wrap" placeholder="4111 2222 3333 4444" maxlength="19" required>
+          </div>
+        </div>
+        <div class="grid-form">
+          <div class="form-group">
+            <label class="form-label">Expiry (MM/YY)</label>
+            <input type="text" id="payExpiry" class="form-control no-icon" placeholder="12/28" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input type="password" id="payCVV" class="form-control no-icon" placeholder="•••" maxlength="4" required>
+          </div>
+        </div>
+        <div class="secure-badge">
+          <i class="fas fa-shield-alt"></i> 256-bit SSL encrypted · Simulated gateway
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closePaymentModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-lock"></i> Pay ₹<span id="payBtnAmount">0</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Fee Invoice Modal -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal-box wide">
+    <div class="modal-header">
+      <h3>Fee Receipt / Invoice</h3>
+      <button class="modal-close" onclick="closeInvoiceModal()">×</button>
+    </div>
+    <div class="modal-body" id="invoiceModalBody"><!-- Injected --></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" onclick="closeInvoiceModal()">Close</button>
+      <button type="button" class="btn btn-primary" onclick="triggerInvoicePrint()"><i class="fas fa-print"></i> Print Receipt</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Technician Modal -->
+<div class="modal-overlay" id="assignModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Assign Technician</h3>
+      <button class="modal-close" onclick="closeAssignModal()">×</button>
+    </div>
+    <form id="assignModalForm">
+      <div class="modal-body">
+        <input type="hidden" id="assignComplaintId">
+        <div id="assignComplaintDetails" style="font-size:0.84rem; color:var(--text-secondary); padding:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:16px; line-height:1.5;"></div>
+        <div class="form-group">
+          <label class="form-label">Technician Name</label>
+          <div class="input-wrap">
+            <i class="fas fa-user-cog input-icon"></i>
+            <input type="text" id="assignTechName" class="form-control" placeholder="e.g. Plumber Ravi, Electrician Kumar" required>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeAssignModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-user-check"></i> Assign & Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Room Allocation Modal -->
+<div class="modal-overlay" id="allocModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="allocModalTitle">Allocate / Reallocate Room</h3>
+      <button class="modal-close" onclick="closeAllocateRoomModal()">×</button>
+    </div>
+    <form id="allocModalForm">
+      <div class="modal-body">
+        <input type="hidden" id="allocStudentId">
+        <div style="margin-bottom:16px; font-size:0.9rem;">
+          Student: <strong id="allocStudentName" style="color:var(--cyan);">—</strong>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Select Room</label>
+          <select id="allocRoomSelect" class="form-control" required><!-- Injected --></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeAllocateRoomModal()">Cancel</button>
+        <button type="submit" id="allocSubmitBtn" class="btn btn-primary"><i class="fas fa-exchange-alt"></i> Reallocate</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Join/Admission Modal -->
+<div class="modal-overlay" id="joinModal">
+  <div class="modal-box wide">
+    <div class="modal-header">
+      <h3>Hostel Admission Application</h3>
+      <button class="modal-close" onclick="closeJoinModal()">×</button>
+    </div>
+    <form id="joinModalForm">
+      <div class="modal-body">
+        <p class="text-secondary text-sm" style="margin-bottom:16px; line-height:1.6;">
+          Apply to enroll in <strong>HMS Pro Hostel</strong>. The warden will review and approve your application within 24 hours.
+        </p>
+        <div class="grid-form">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="joinName" class="form-control no-icon" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Roll Number *</label>
+            <input type="text" id="joinRoll" class="form-control no-icon" placeholder="e.g. CS26045" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Branch *</label>
+            <input type="text" id="joinBranch" class="form-control no-icon" placeholder="CSE / IT / ECE" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone *</label>
+            <input type="text" id="joinContact" class="form-control no-icon" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="joinEmail" class="form-control no-icon">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Blood Group</label>
+            <input type="text" id="joinBlood" class="form-control no-icon" placeholder="e.g. A+">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Parent / Guardian</label>
+            <input type="text" id="joinParent" class="form-control no-icon">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Parent Phone</label>
+            <input type="text" id="joinParentContact" class="form-control no-icon">
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label class="form-label">Set Password *</label>
+            <div class="input-wrap">
+              <i class="fas fa-lock input-icon"></i>
+              <input type="password" id="joinPass" class="form-control" placeholder="Choose a secure password" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeJoinModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Application</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
